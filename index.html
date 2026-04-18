@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Tech Store</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body{
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif, sans-serif;
+  margin:0;
+  background:#f5f5f5;
+}
+
+body.dark{
+  background:#111;
+  color:#fff;
+}
+
+header{
+  background:#111;
+  color:#fff;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+#container{
+  display:flex;
+  gap:20px;
+  padding:20px;
+}
+
+#filters{
+  width:260px;
+}
+
+#grid{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:15px;
+}
+
+.card{
+  background:#fff;
+  padding:15px;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  text-align:center;
+}
+
+body.dark .card{
+  background:#1e1e1e;
+}
+
+.card img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+button{
+  padding:8px;
+  margin-top:8px;
+  cursor:pointer;
+}
+
+.add{
+  background:#b30000;
+  color:#fff;
+  border:none;
+  width:100%;
+}
+
+.instock{color:green;}
+.outstock{color:red;}
+
+#viewModal, #cartModal{
+  display:none;
+  position:fixed;
+  top:15%;
+  left:50%;
+  transform:translateX(-50%);
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  width:300px;
+  z-index:999;
+}
+
+body.dark #viewModal,
+body.dark #cartModal{
+  background:#222;
+}
+.top-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.top-icons a {
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.footer{
+  background:#111;
+  color:white;
+  padding:40px 20px;
+  margin-top:40px;
+}
+
+.footer-container{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+}
+
+.footer-section{
+  flex:1;
+  min-width:180px;
+}
+
+.footer-section h3,
+.footer-section h4{
+  margin-bottom:10px;
+}
+
+.footer-section p{
+  font-size:14px;
+  margin:5px 0;
+}
+
+.footer-bottom{
+  text-align:center;
+  margin-top:20px;
+  border-top:1px solid #444;
+  padding-top:10px;
+  font-size:13px;
+}
+.love{
+  width:100%;
+  padding:8px;
+  margin-top:5px;
+  border:none;
+  cursor:pointer;
+  background:#eee;
+  border-radius:6px;
+}
+
+.love.active{
+  background:#ff4d6d;
+  color:white;
+}
+.top-icons{
+  display:flex;
+  gap:20px;
+  align-items:center;
+}
+
+.icon-btn{
+  background:none;
+  border:none;
+  font-size:24px;
+  cursor:pointer;
+  text-decoration:none;
+}
+
+.heart{
+  color:red;
+}
+
+.whatsapp{
+  color:#25D366;
+}
+
+@media(max-width:800px){
+  #container{flex-direction:column;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>🛒 Smart Tech Store</h2>
+  <div>
+    <button onclick="toggleTheme()">🌙</button>
+    <button onclick="showCart()">🛒 Cart</button>
+  </div>
+</header>
+
+<section id="container">
+
+<div id="filters">
+
+<input type="text" id="search" placeholder="Search..." oninput="applyFilters()" style="width:100%;padding:8px;margin-bottom:15px;">
+
+
+<h3>Property Type</h3>
+<label><input type="checkbox" value="House" data-type="type" onchange="applyFilters()"> House</label><br>
+<label><input type="checkbox" value="Apartment" data-type="type" onchange="applyFilters()"> Apartment</label><br>
+<label><input type="checkbox" value="Land" data-type="type" onchange="applyFilters()"> Land</label><br>
+<label><input type="checkbox" value="Plan" data-type="type" onchange="applyFilters()"> Architectural Plan</label><br>
+
+<h3>Transaction Type</h3>
+<label><input type="checkbox" value="For Sale" data-type="status" onchange="applyFilters()"> For Sale</label><br>
+<label><input type="checkbox" value="For Rent" data-type="status" onchange="applyFilters()"> For Rent</label><br>
+
+<h3>Bedrooms</h3>
+<label><input type="checkbox" value="1" data-type="bedrooms" onchange="applyFilters()"> 1</label><br>
+<label><input type="checkbox" value="2" data-type="bedrooms" onchange="applyFilters()"> 2</label><br>
+<label><input type="checkbox" value="3" data-type="bedrooms" onchange="applyFilters()"> 3</label><br>
+<label><input type="checkbox" value="4" data-type="bedrooms" onchange="applyFilters()"> 4</label><br>
+<label><input type="checkbox" value="5" data-type="bedrooms" onchange="applyFilters()"> 5</label><br>
+<label><input type="checkbox" value="6+" data-type="bedrooms" onchange="applyFilters()"> 6+</label><br>
+
+<h3>Location</h3>
+<label><input type="checkbox" value="Kilimani" data-type="location" onchange="applyFilters()"> Kilimani</label><br>
+<label><input type="checkbox" value="Westlands" data-type="location" onchange="applyFilters()"> Westlands</label><br>
+<label><input type="checkbox" value="Kitengela" data-type="location" onchange="applyFilters()"> Kitengela</label><br>
+<label><input type="checkbox" value="Rongai" data-type="location" onchange="applyFilters()"> Rongai</label><br>
+
+<h3>Land Size</h3>
+<label><input type="checkbox" value="30x60" data-type="land_size" onchange="applyFilters()"> 30 × 60 ft</label><br>
+<label><input type="checkbox" value="50x100" data-type="land_size" onchange="applyFilters()"> 50 × 100 ft</label><br>
+<label><input type="checkbox" value="100x100" data-type="land_size" onchange="applyFilters()"> 100 × 100 ft</label><br>
+
+<h3>Price Range</h3>
+<label><input type="checkbox" value="under5m" data-type="price" onchange="applyFilters()"> Under 5M</label><br>
+<label><input type="checkbox" value="5-10m" data-type="price" onchange="applyFilters()"> 5M – 10M</label><br>
+<label><input type="checkbox" value="10-20m" data-type="price" onchange="applyFilters()"> 10M – 20M</label><br>
+<label><input type="checkbox" value="20-50m" data-type="price" onchange="applyFilters()"> 20M – 50M</label><br>
+<label><input type="checkbox" value="50m+" data-type="price" onchange="applyFilters()"> 50M+</label><br>
+
+<h3>Condition</h3>
+<label><input type="checkbox" value="New" data-type="condition" onchange="applyFilters()"> New</label><br>
+<label><input type="checkbox" value="Used" data-type="condition" onchange="applyFilters()"> Used</label><br>
+<label><input type="checkbox" value="Raw Land" data-type="condition" onchange="applyFilters()"> Raw Land</label><br>
+
+<br>
+<button onclick="clearFilters()">Clear Filters</button>
+</div>
+
+<div id="grid"></div>
+
+</section>
+<div id="viewModal" style="display:none; position:fixed; top:10; left:10; width:100%; height:100%;
+background:rgba(0,0,0,0.6);">
+
+  <div style="background:#fff; width:320px; margin:80px auto; padding:15px; border-radius:10px; text-align:center;">
+
+    <img id="viewImg" style="width:100%; height:200px; object-fit:cover; border-radius:10px;">
+
+    <h3 id="viewName"></h3>
+    <p id="viewPrice"></p>
+    <p id="viewCategory"></p>
+    <p id="viewABV"></p>
+    <p id="viewCountry"></p>
+    <p id="viewBrand"></p>
+    <p id="viewStock"></p>
+    <p id="viewDesc" style="font-size:13px; text-align:left;"></p>
+
+    <button onclick="closeView()">Close</button>
+
+  </div>
+</div>
+
+<div id="cartModal">
+<h3>Your Order</h3>
+<ul id="cartList"></ul>
+<p><b>Total: KES <span id="total">0</span></b></p>
+<button onclick="checkout()">WhatsApp Order</button>
+<button onclick="closeCart()">Close</button>
+</div>
+
+<footer class="footer">
+
+<div class="footer-container">
+
+  <div class="footer-section">
+    <h3>🛒 Smart Tech Store</h3>
+    <p>Your trusted shop for phones, laptops, and accessories.</p>
+  </div>
+
+ <div class="footer-section">
+  <h4>📞 Contact Us</h4>
+  <p>📱 Phone: +254 731 858 997</p>
+
+  <p>
+    💬 <a href="https://wa.me/254731858997" target="_blank" style="color:#25D366;">WhatsApp</a>
+  </p>
+
+  <p>📧 Email: support@smarttech.com</p>
+  <p>📍 Nairobi, Kenya</p>
+
+  <div style="margin-top:10px; font-size:22px; display:flex; gap:12px;">
+    
+    <a href="https://wa.me/254731858997" target="_blank" style="color:#25D366;">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <a href="https://facebook.com" target="_blank" style="color:#1877F2;">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+
+  <a href="https://instagram.com" target="_blank" style="color:#E4405F;">
+    <i class="fab fa-instagram"></i>
+  </a>
+
+
+</div>
+
+</div>
+
+  <div class="footer-section">
+    <h4>💳 Payment</h4>
+    <p>M-PESA Till: 123456</p>
+    <p>Visa / MasterCard</p>
+    <p>Cash on Delivery</p>
+  </div>
+
+  <div class="footer-section">
+    <h4>📜 Terms</h4>
+    <p>No refunds after 7 days</p>
+    <p>Warranty where stated</p>
+    <p>Prices may change</p>
+  </div>
+
+</div>
+
+<div class="footer-bottom">
+  <p>© 2026Acacia Liquor Store</p>
+</div>
+
+</footer>
+
+<script>
+
+const products = [
+  {name:"3 Bedroom Apartment Kilimani", type:"Apartment", status:"For Sale", bedrooms:3, location:"Kilimani", price:8500000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"2 Bedroom Apartment Westlands", type:"Apartment", status:"For Rent", bedrooms:2, location:"Westlands", price:120000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Luxury 4 Bedroom Villa Kilimani", type:"House", status:"For Sale", bedrooms:4, location:"Kilimani", price:18000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"3 Bedroom House Rongai", type:"House", status:"For Sale", bedrooms:3, location:"Rongai", price:6500000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"5 Bedroom Mansion Westlands", type:"House", status:"For Sale", bedrooms:5, location:"Westlands", price:45000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"6 Bedroom House Kitengela", type:"House", status:"For Sale", bedrooms:6, location:"Kitengela", price:22000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Studio Apartment Westlands", type:"Apartment", status:"For Rent", bedrooms:1, location:"Westlands", price:70000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"1 Bedroom Apartment Rongai", type:"Apartment", status:"For Rent", bedrooms:1, location:"Rongai", price:45000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"2 Bedroom Apartment Kilimani", type:"Apartment", status:"For Rent", bedrooms:2, location:"Kilimani", price:95000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Modern 2 Bedroom House Kitengela", type:"House", status:"For Sale", bedrooms:2, location:"Kitengela", price:5200000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"30x60 Plot Kitengela", type:"Land", status:"For Sale", bedrooms:0, location:"Kitengela", land_size:"30x60", price:1500000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"50x100 Plot Rongai", type:"Land", status:"For Sale", bedrooms:0, location:"Rongai", land_size:"50x100", price:2800000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"50x100 Plot Westlands", type:"Land", status:"For Sale", bedrooms:0, location:"Westlands", land_size:"50x100", price:12000000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"100x100 Land Kilimani", type:"Land", status:"For Sale", bedrooms:0, location:"Kilimani", land_size:"100x100", price:55000000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"100x100 Plot Kitengela", type:"Land", status:"For Sale", bedrooms:0, location:"Kitengela", land_size:"100x100", price:8000000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"Architectural 3 Bedroom Plan", type:"Plan", status:"For Sale", bedrooms:3, location:"N/A", price:60000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Modern 4 Bedroom House Plan", type:"Plan", status:"For Sale", bedrooms:4, location:"N/A", price:85000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Luxury 5 Bedroom Villa Plan", type:"Plan", status:"For Sale", bedrooms:5, location:"N/A", price:120000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"3 Bedroom Apartment Westlands", type:"Apartment", status:"For Sale", bedrooms:3, location:"Westlands", price:13500000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"4 Bedroom House Rongai", type:"House", status:"For Sale", bedrooms:4, location:"Rongai", price:9500000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"2 Bedroom House Kilimani", type:"House", status:"For Rent", bedrooms:2, location:"Kilimani", price:110000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"Studio Apartment Kilimani", type:"Apartment", status:"For Sale", bedrooms:1, location:"Kilimani", price:6000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"1 Bedroom Apartment Westlands", type:"Apartment", status:"For Sale", bedrooms:1, location:"Westlands", price:5000000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"Prime 30x60 Plot Rongai", type:"Land", status:"For Sale", bedrooms:0, location:"Rongai", land_size:"30x60", price:1700000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"50x100 Residential Plot Kilimani", type:"Land", status:"For Sale", bedrooms:0, location:"Kilimani", land_size:"50x100", price:15000000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"5 Bedroom House Kilimani", type:"House", status:"For Sale", bedrooms:5, location:"Kilimani", price:32000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"6 Bedroom Mansion Westlands", type:"House", status:"For Sale", bedrooms:6, location:"Westlands", price:60000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"2 Bedroom Apartment Kitengela", type:"Apartment", status:"For Rent", bedrooms:2, location:"Kitengela", price:60000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"3 Bedroom House Kitengela", type:"House", status:"For Sale", bedrooms:3, location:"Kitengela", price:7200000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+   {name:"2 Bedroom Apartment South B", type:"Apartment", status:"For Sale", bedrooms:2, location:"Nairobi", price:7800000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"3 Bedroom House South C", type:"House", status:"For Sale", bedrooms:3, location:"Nairobi", price:9800000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Luxury 4 Bedroom Villa Lavington", type:"House", status:"For Sale", bedrooms:4, location:"Nairobi", price:25000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Studio Apartment Lavington", type:"Apartment", status:"For Rent", bedrooms:1, location:"Nairobi", price:65000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"1 Bedroom Apartment South B", type:"Apartment", status:"For Rent", bedrooms:1, location:"Nairobi", price:50000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"50x100 Plot South C", type:"Land", status:"For Sale", bedrooms:0, location:"Nairobi", land_size:"50x100", price:9000000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"30x60 Plot Lavington", type:"Land", status:"For Sale", bedrooms:0, location:"Nairobi", land_size:"30x60", price:12000000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"100x100 Plot South B", type:"Land", status:"For Sale", bedrooms:0, location:"Nairobi", land_size:"100x100", price:20000000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"Modern 3 Bedroom House Lavington", type:"House", status:"For Sale", bedrooms:3, location:"Nairobi", price:15000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"5 Bedroom Mansion Lavington", type:"House", status:"For Sale", bedrooms:5, location:"Nairobi", price:55000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"2 Bedroom Apartment Ongata Rongai", type:"Apartment", status:"For Rent", bedrooms:2, location:"Rongai", price:55000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"3 Bedroom House Ongata Rongai", type:"House", status:"For Sale", bedrooms:3, location:"Rongai", price:7000000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"4 Bedroom House Ongata Rongai", type:"House", status:"For Sale", bedrooms:4, location:"Rongai", price:10500000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"1 Bedroom Apartment Kitengela Town", type:"Apartment", status:"For Rent", bedrooms:1, location:"Kitengela", price:35000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Studio Apartment Kitengela Town", type:"Apartment", status:"For Rent", bedrooms:1, location:"Kitengela", price:30000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"30x60 Plot Kitengela Prime", type:"Land", status:"For Sale", bedrooms:0, location:"Kitengela", land_size:"30x60", price:1800000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"50x100 Plot Kitengela Prime", type:"Land", status:"For Sale", bedrooms:0, location:"Kitengela", land_size:"50x100", price:3200000, condition:"Raw Land", image:"images/drostdy hof chenin blanc.jpg"},
+
+  {name:"Architectural 2 Bedroom Plan", type:"Plan", status:"For Sale", bedrooms:2, location:"N/A", price:45000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Modern 6 Bedroom Mansion Plan", type:"Plan", status:"For Sale", bedrooms:6, location:"N/A", price:150000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+  {name:"Luxury Duplex House Plan", type:"Plan", status:"For Sale", bedrooms:4, location:"N/A", price:90000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"}
+];
+
+let cart = {};
+
+function display(list = products){
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  list.forEach(p => {
+    grid.innerHTML += `
+      <div class="card">
+
+        <img src="${p.image}" alt="${p.name}"
+          onclick="viewProduct('${p.name}')"
+          style="width:100%; height:180px; object-fit:cover; border-radius:10px; cursor:pointer;">
+
+        <h3>${p.name}</h3>
+        <p>KES ${p.price}</p>
+
+        <p>${p.type} | ${p.location}</p>
+
+        <p class="${p.stock > 0 ? 'instock' : 'outstock'}">
+          ${p.stock > 0 ? 'Available' : 'Not Available'}
+        </p>
+
+        <div class="top-icons">
+
+          <button onclick="add('${p.name}')" class="icon-btn">🛒</button>
+
+          <button onclick="toggleLove('${p.name}')" class="icon-btn heart">
+            ${likes[p.name] ? "❤️" : "🤍"}
+          </button>
+
+          <a href="https://wa.me/254731858997" target="_blank" style="color:#25D366;">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+
+          <a href="https://instagram.com" target="_blank" style="color:#E4405F;">
+            <i class="fab fa-instagram"></i>
+          </a>
+
+        </div>
+
+      </div>
+    `;
+  });
+}
+let likes = {};
+
+function toggleLove(name){
+  if(likes[name]){
+    delete likes[name];
+  } else {
+    likes[name] = true;
+  }
+  display(products);
+}
+
+function viewProduct(name){
+  const p = products.find(x => x.name === name);
+  if(!p) return;
+
+  document.getElementById("viewImg").src = p.image;
+  document.getElementById("viewName").textContent = p.name;
+
+  document.getElementById("viewPrice").textContent = "KES " + p.price;
+
+  document.getElementById("viewCategory").textContent =
+    (p.category || "Property") + " | " + (p.size_sqft ? p.size_sqft + " sq ft" : "N/A");
+
+  document.getElementById("viewABV").textContent =
+    "Location: " + (p.location || "N/A");
+
+  document.getElementById("viewCountry").textContent =
+    "Condition: " + (p.condition || "New");
+
+  document.getElementById("viewBrand").textContent =
+    "Developer: " + (p.developer || "N/A");
+
+  document.getElementById("viewStock").textContent =
+    "Status: " + (p.status || "Available");
+
+  document.getElementById("viewDesc").textContent =
+    p.description || "";
+
+  document.getElementById("viewModal").style.display = "block";
+}
+
+function closeView(){
+document.getElementById("viewModal").style.display = "none";
+}
+
+function applyFilters(){
+  const search = document.getElementById("search").value.toLowerCase();
+
+  const checked = [...document.querySelectorAll("input[type=checkbox]:checked")];
+
+  const type = checked
+    .filter(c => c.dataset.type === "type")
+    .map(c => c.value);
+
+  const status = checked
+    .filter(c => c.dataset.type === "status")
+    .map(c => c.value);
+
+  const bedrooms = checked
+    .filter(c => c.dataset.type === "bedrooms")
+    .map(c => c.value);
+
+  const location = checked
+    .filter(c => c.dataset.type === "location")
+    .map(c => c.value);
+
+  const land_size = checked
+    .filter(c => c.dataset.type === "land_size")
+    .map(c => c.value);
+
+  const condition = checked
+    .filter(c => c.dataset.type === "condition")
+    .map(c => c.value);
+
+  const price = checked
+    .filter(c => c.dataset.type === "price")
+    .map(c => c.value);
+
+  const filtered = products.filter(p => {
+
+    const matchSearch = p.name.toLowerCase().includes(search);
+
+    const matchType = !type.length || type.includes(p.type);
+
+    const matchStatus = !status.length || status.includes(p.status);
+
+    const matchLocation = !location.length || location.includes(p.location);
+
+    const matchCondition = !condition.length || condition.includes(p.condition);
+
+    const matchLandSize = !land_size.length || land_size.includes(p.land_size);
+
+    const matchBedrooms = !bedrooms.length || bedrooms.some(b => {
+      if (b === "6+") return p.bedrooms >= 6;
+      return p.bedrooms == Number(b);
+    });
+
+    const matchPrice = !price.length || price.some(r => {
+      if(r === "under5m") return p.price < 5000000;
+      if(r === "5-10m") return p.price >= 5000000 && p.price <= 10000000;
+      if(r === "10-20m") return p.price >= 10000000 && p.price <= 20000000;
+      if(r === "20-50m") return p.price >= 20000000 && p.price <= 50000000;
+      if(r === "50m+") return p.price > 50000000;
+    });
+
+    return (
+      matchSearch &&
+      matchType &&
+      matchStatus &&
+      matchBedrooms &&
+      matchLocation &&
+      matchLandSize &&
+      matchPrice &&
+      matchCondition
+    );
+  });
+
+  display(filtered);
+}
+
+function clearFilters(){
+document.querySelectorAll("input[type=checkbox]").forEach(c=>c.checked=false);
+document.getElementById("search").value = "";
+display(products);
+}
+
+function add(name){
+const p = products.find(x => x.name === name);
+if(!p) return;
+
+if(p.stock <= 0){
+alert("Out of stock");
+return;
+}
+
+if(!cart[name]){
+cart[name] = {qty:1, price:p.price};
+}else{
+cart[name].qty++;
+}
+
+p.stock--;
+display(products);
+}
+
+function showCart(){
+const list = document.getElementById("cartList");
+list.innerHTML = "";
+let total = 0;
+
+for(const [name,item] of Object.entries(cart)){
+const sub = item.qty * item.price;
+total += sub;
+list.innerHTML += `<li>${name} x${item.qty} = KES ${sub}</li>`;
+}
+
+document.getElementById("total").textContent = total;
+document.getElementById("cartModal").style.display = "block";
+}
+
+function closeCart(){
+document.getElementById("cartModal").style.display = "none";
+}
+
+function checkout(){
+let msg = "🛒 Liquor Order:%0A%0A";
+let total = 0;
+
+for(const [name,item] of Object.entries(cart)){
+const sub = item.qty * item.price;
+msg += `${name} x${item.qty} = KES ${sub}%0A`;
+total += sub;
+}
+
+msg += `%0A💰 Total: KES ${total}`;
+
+window.open(`https://wa.me/254731858997?text=${msg}`, "_blank");
+}
+
+function toggleTheme(){
+document.body.classList.toggle("dark");
+}
+
+display(products);
+</script>
+
+</body>
+</html>
