@@ -195,12 +195,23 @@ body.dark #cartModal{
 
 <body>
 
-<header>
-  <h2>🛒 Smart Tech Store</h2>
+<header style="display:flex; align-items:center; justify-content:space-between;">
+
+  <div style="display:flex; align-items:center; gap:10px;">
+  <img src="acacia-logo.png" alt="Acacia Pharmacy Logo" style="width:45px; height:45px;">
+  <h2 style="margin:0; color:#1b8f3c; font-weight:bold;">
+    Acacia Pharmacy Store
+  </h2>
+</div>
+
+  <div id="motto" style="font-size:14px; color:#ccc;"></div>
+
+  
   <div>
     <button onclick="toggleTheme()">🌙</button>
     <button onclick="showCart()">🛒 Cart</button>
   </div>
+
 </header>
 
 <section id="container">
@@ -349,7 +360,24 @@ background:rgba(0,0,0,0.6);">
 </footer>
 
 <script>
+const mottos = [
+  "🚚 Fast & Reliable Delivery Across Kenya",
+  "✅ Trusted Quality Medicines & Health Products",
+  "💰 Affordable Prices + Special Discounts Available",
+  "📞 Call / WhatsApp: +254 731 858 997",
+  "💳 Flexible Payment Plans Available (M-PESA, Card, Cash)",
+  "⚡ Order Now – Quick Service & Secure Payments"
+];
 
+let index = 0;
+
+function changeMotto(){
+  document.getElementById("motto").textContent = mottos[index];
+  index = (index + 1) % mottos.length;
+}
+
+setInterval(changeMotto, 2000);
+changeMotto();
 const products = [
   {name:"3 Bedroom Apartment Kilimani", type:"Apartment", status:"For Sale", bedrooms:3, location:"Kilimani", price:8500000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
   {name:"2 Bedroom Apartment Westlands", type:"Apartment", status:"For Rent", bedrooms:2, location:"Westlands", price:120000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
