@@ -190,6 +190,19 @@ body.dark #cartModal{
 @media(max-width:800px){
   #container{flex-direction:column;}
 }
+#viewGallery{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+}
+
+#viewGallery img{
+  width:100px;
+  height:80px;
+  object-fit:cover;
+  border-radius:6px;
+  cursor:pointer;
+}
 </style>
 </head>
 
@@ -274,20 +287,25 @@ background:rgba(0,0,0,0.6);">
 
   <div style="background:#fff; width:320px; margin:80px auto; padding:15px; border-radius:10px; text-align:center;">
 
-    <img id="viewImg" style="width:100%; height:200px; object-fit:cover; border-radius:10px;">
+     <img id="viewImg" style="width:100%; height:200px; object-fit:cover; border-radius:10px;">
 
-    <h3 id="viewName"></h3>
-    <p id="viewPrice"></p>
-    <p id="viewCategory"></p>
-    <p id="viewABV"></p>
-    <p id="viewCountry"></p>
-    <p id="viewBrand"></p>
-    <p id="viewStock"></p>
-    <p id="viewDesc" style="font-size:13px; text-align:left;"></p>
-
-    <button onclick="closeView()">Close</button>
-
+  <div style="margin:10px;">
+    <button onclick="prevImg()">⬅</button>
+    <button onclick="nextImg()">➡</button>
   </div>
+
+  <h3 id="viewName"></h3>
+  <p id="viewPrice"></p>
+  <p id="viewCategory"></p>
+  <p id="viewABV"></p>
+  <p id="viewCountry"></p>
+  <p id="viewBrand"></p>
+  <p id="viewStock"></p>
+  <p id="viewDesc" style="font-size:13px; text-align:left;"></p>
+
+  <button onclick="closeView()">Close</button>
+
+</div>
 </div>
 
 <div id="cartModal">
@@ -379,11 +397,11 @@ function changeMotto(){
 setInterval(changeMotto, 2000);
 changeMotto();
 const products = [
-{name: "3 Bedroom Apartment Kilimani", category: "Apartment",status: "For Sale",bedrooms: 3, size_sqft: 1200,  location: "Kilimani",  price: 8500000,  condition: "New",  developer: "Acacia Developers", image:"images/drostdy hof chenin blanc.jpg", description: "Modern 3-bedroom apartment in Kilimani with spacious rooms, balcony, parking, and 24/7 security."},
-  {name:"2 Bedroom Apartment Westlands", type:"Apartment", status:"For Rent", bedrooms:2, location:"Westlands", price:120000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
-  {name:"Luxury 4 Bedroom Villa Kilimani", type:"House", status:"For Sale", bedrooms:4, location:"Kilimani", price:18000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
-  {name:"3 Bedroom House Rongai", type:"House", status:"For Sale", bedrooms:3, location:"Rongai", price:6500000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
-  {name:"5 Bedroom Mansion Westlands", type:"House", status:"For Sale", bedrooms:5, location:"Westlands", price:45000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
+{name: "3 Bedroom Apartment Kilimani", category: "Apartment",status: "For Sale",bedrooms: 3, size_sqft: 1200,  location: "Kilimani",  price: 8500000,  condition: "New",  developer: "Acacia Developers",  images: [  "images/house1.jpg", "images/house2.jpg", "images/house3.jpg"], description: "Modern 3-bedroom apartment in Kilimani with spacious rooms, balcony, parking, and 24/7 security."},
+  {name:"2 Bedroom Apartment Westlands", type:"Apartment", status:"For Rent", bedrooms:2, location:"Westlands", price:120000, condition: "New",  developer: "Acacia Developers",  images: [  "images/house1.jpg", "images/house2.jpg", "images/house3.jpg"], description: "Modern 3-bedroom apartment in Kilimani with spacious rooms, balcony, parking, and 24/7 security."},
+  {name:"Luxury 4 Bedroom Villa Kilimani", type:"House", status:"For Sale", bedrooms:4, location:"Kilimani", price:18000000, condition: "New",  developer: "Acacia Developers",  images: [  "images/house1.jpg", "images/house2.jpg", "images/house3.jpg"], description: "Modern 3-bedroom apartment in Kilimani with spacious rooms, balcony, parking, and 24/7 security."},
+  {name:"3 Bedroom House Rongai", type:"House", status:"For Sale", bedrooms:3, location:"Rongai", price:6500000, condition: "New",  developer: "Acacia Developers",  images: [  "images/house1.jpg", "images/house2.jpg", "images/house3.jpg"], description: "Modern 3-bedroom apartment in Kilimani with spacious rooms, balcony, parking, and 24/7 security."},
+  {name:"5 Bedroom Mansion Westlands", type:"House", status:"For Sale", bedrooms:5, location:"Westlands", price:45000000, condition: "New",  developer: "Acacia Developers",  images: [  "images/house1.jpg", "images/house2.jpg", "images/house3.jpg"], description: "Modern 3-bedroom apartment in Kilimani with spacious rooms, balcony, parking, and 24/7 security."},
   {name:"6 Bedroom House Kitengela", type:"House", status:"For Sale", bedrooms:6, location:"Kitengela", price:22000000, condition:"New", image:"images/drostdy hof chenin blanc.jpg"},
   {name:"Studio Apartment Westlands", type:"Apartment", status:"For Rent", bedrooms:1, location:"Westlands", price:70000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
   {name:"1 Bedroom Apartment Rongai", type:"Apartment", status:"For Rent", bedrooms:1, location:"Rongai", price:45000, condition:"Used", image:"images/drostdy hof chenin blanc.jpg"},
@@ -450,11 +468,14 @@ function display(list = products){
   grid.innerHTML = "";
 
   list.forEach(p => {
+
+    const mainImage = (p.images && p.images.length) ? p.images[0] : p.image;
+
     grid.innerHTML += `
       <div class="card">
 
-        <img src="${p.image}" alt="${p.name}"
-          onclick="viewProduct('${p.name}')"
+        <img src="${mainImage}" alt="${p.name}"
+          onclick="viewProduct(\`${p.name}\`)"
           style="width:100%; height:180px; object-fit:cover; border-radius:10px; cursor:pointer;">
 
         <h3>${p.name}</h3>
@@ -462,8 +483,8 @@ function display(list = products){
 
         <p>${p.type} | ${p.location}</p>
 
-        <p class="${p.stock > 0 ? 'instock' : 'outstock'}">
-          ${p.stock > 0 ? 'Available' : 'Not Available'}
+        <p class="${(p.stock ?? 1) > 0 ? 'instock' : 'outstock'}">
+          ${(p.stock ?? 1) > 0 ? 'Available' : 'Not Available'}
         </p>
 
         <div class="top-icons">
@@ -503,10 +524,13 @@ function viewProduct(name){
   const p = products.find(x => x.name === name);
   if(!p) return;
 
-  document.getElementById("viewImg").src = p.image;
+  currentImages = p.images ? p.images : [p.image];
+  currentIndex = 0;
+
+  document.getElementById("viewImg").src = currentImages[currentIndex];
+
   document.getElementById("viewName").textContent = p.name;
   document.getElementById("viewPrice").textContent = "KES " + p.price;
-
   document.getElementById("viewCategory").textContent =
     (p.type || "Property") + " | " + (p.bedrooms ? p.bedrooms + " Bedrooms" : "");
 
@@ -520,7 +544,6 @@ function viewProduct(name){
     "Status: " + (p.status || "Available");
 
   document.getElementById("viewStock").textContent = "";
-
   document.getElementById("viewDesc").textContent =
     p.description || "No description available";
 
@@ -528,7 +551,7 @@ function viewProduct(name){
 }
 
 function closeView(){
-document.getElementById("viewModal").style.display = "none";
+  document.getElementById("viewModal").style.display = "none";
 }
 
 function applyFilters(){
